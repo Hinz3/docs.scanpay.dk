@@ -1,31 +1,258 @@
-
+<style>
+	hr {
+		margin: 50px 0;
+		border: 0;
+    	border-top: 1px solid #e1e4e5;
+	}
+</style>
 <h1>Subscriptions</h1>
+<p>
+	Use this API to create and manage recurring payments.
+</p>
+<h2 id="ping-service">Create Subscriber</h2>
+To create a subscriber you must send the special parameter <span class="hljs-attr">"subscriber"</span> with the <a href="/payment-link">Payment Link Request</a>. The request can not contain <span class="hljs-attr">"items"</span>.
+<hr>
+<h2 id="ping-service">Charge Subscriber</h2>
+<h3 id="request-headers">Request Headers</h3>
+<p>The request endpoint is: <code class="code">https://api.scanpay.dk/v1/subscriber/charge</code></p>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>HTTP/1.1 headers</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tablecode field--required">
+        <span class="hljs-attribute">Authorization</span>: <span class="">Basic MTE1MzpZSFpJVUdRdzZOa0NJWWEzbUc2Q1djZ1NobmwxM3h1STdPREZVWXVNeTBqNzkwUTZUaHdCRWp4ZldGWHdKWjBX</span>
+      </td>
+      <td>
+        HTTP Basic authentication. <a href="/security#basic-authentication">Read more</a>.
+      </td>
+    </tr>
+    <tr>
+      <td class="tablecode field--required">
+        <span class="hljs-attribute">Idempotency-Key</span>: <span class="">xM3h1STdPREZVWXVNeTBqNzkwUTZUaHdCRWp4ZldGWHdKWjBX</span>
+      </td>
+      <td>
+         Sending multiple requests with the same the body and idempotency key will always give the same response and response code. To ensure the validity of the response, however, you must check for the Idempotency-Status header.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-<pre><code class="pcode">
-GET /v1/subscribers/$id-$id
-{
-    "billing": {},
-    "shipping": {},
-    "created": "",
-    "total": "9149 DKK",
-    "lastCapture": ""
-}
+<h3 id="request-fields">Request Fields</h3>
+<p>All request fields are listed below. Note that if the billing address and/or shipping address is unspecified, they will default to the addresses specified in the subscriber.</p>
 
-GET /v1/subscribers/$id/events (seq?)
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>JSON fields</th>
+      <th class="td--desc">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"orderid"</span>: <span class="hljs-string">"123"</span></td>
+      <td class="td--desc">A unique ID that you choose. Never reuse IDs or your synchronization may behave in unexpected ways.</td>
+    </tr>
+    <tr>
+      <td class="paylink--tcode field--required"><pre>{% include "src/code/paylink/items.json" %}</pre></td>
+      <td class="td--desc">
+        An array with items.
+        <ul class="table--ul">
+          <li><b>name:</b> The name of the item.</li>
+          <li><b>quantity:</b> The number of items (integer).</li>
+          <li><b>total:</b> <code class="code">Required</code>The line total (i.e. unit-price x quantity) with an ISO 4217 currency code.</li>
+          <li><b>sku:</b> A <a rel="nofollow" href="//en.wikipedia.org/wiki/Stock_keeping_unit">SKU</a> for this particular product.</li>
+        </ul>
+        <span class="td--note">In this example the grand total is 13397.9986 DKK. Most acquires only support 2 digits after the decimal point. If this is the case we will truncate to 13397.99.</span>
+      </td>
+    </tr>
+{% include "src/code/addr.tpl" %}
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"autocapture"</span>: <span class="hljs-number">true</span></td>
+      <td class="td--desc">
+        Automatically capture the payment. Default is true.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-POST/DELETE /v1/subscribers/$id
+<h3 id="request-headers">Response Headers</h3>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>HTTP/1.1 headers</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tablecode field--required">
+        <span class="hljs-attribute">Idempotency-Status</span>: <span class="">OK</span>
+      </td>
+      <td>
+        Response header to ensure that the idempotency key has been considered.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-POST /v1/subscribers/$id/charge
-    "items": [], - manuel trækning
+<h3 id="subcharge-response">Response</h3>
+Successful responses have a <code class="code">200</code> HTTP status code
+<hr>
+<!--
+<h2 id="ping-service">Get Subscriber</h2>
+<h3 id="request-headers">Request Headers</h3>
+<p>To get a subscriber send a HTTP GET request to https: <code class="code">https://api.scanpay.dk/v1/subscriber/<span class="hljs-string">$id</span></code></p>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>HTTP/1.1 headers</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tablecode field--required">
+        <span class="hljs-attribute">Authorization</span>: <span class="">Basic MTE1MzpZSFpJVUdRdzZOa0NJWWEzbUc2Q1djZ1NobmwxM3h1STdPREZVWXVNeTBqNzkwUTZUaHdCRWp4ZldGWHdKWjBX</span>
+      </td>
+      <td>
+        HTTP Basic authentication. <a href="/security#basic-authentication">Read more</a>.
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 id="seq-response">Response</h3>
+Successful responses have a <code class="code">200</code> HTTP status code
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>JSON fields</th>
+      <th class="td--desc">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"ref"</span>: <span class="hljs-string">"sub91:123"</span></td>
+      <td class="td--desc">A unique subscriber reference ID that you haven chosen.</td>
+    </tr>
+{% include "src/code/addr.tpl" %}
+  </tbody>
+</table>
+<hr>
+<h2 id="ping-service">Modify Subscriber</h2>
+<h3 id="request-headers">Request Headers</h3>
+<p>To modify a subscriber send a HTTP POST request to https: <code class="code">https://api.scanpay.dk/v1/subscriber/<span class="hljs-string">$id</span></code></p>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>HTTP/1.1 headers</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tablecode field--required">
+        <span class="hljs-attribute">Authorization</span>: <span class="">Basic MTE1MzpZSFpJVUdRdzZOa0NJWWEzbUc2Q1djZ1NobmwxM3h1STdPREZVWXVNeTBqNzkwUTZUaHdCRWp4ZldGWHdKWjBX</span>
+      </td>
+      <td>
+        HTTP Basic authentication. <a href="/security#basic-authentication">Read more</a>.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-GET /v1/subscribers/seq/$seq
-    “seq”: 5,
-    “events”?: [... list of events (onboarded + charges) ...],
+<h3 id="submod-request">Request fields</h3>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>JSON fields</th>
+      <th class="td--desc">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"ref"</span>: <span class="hljs-string">"123"</span></td>
+      <td class="td--desc">A unique subscriber reference ID that you haven chosen.</td>
+    </tr>
+{% include "src/code/addr.tpl" %}
+  </tbody>
+</table>
 
-New card:
+<h3 id="submod-response">Response</h3>
+Successful responses have a <code class="code">200</code> HTTP status code
+<hr>
+-->
+<h2 id="ping-service">Renew Subscriber</h2>
+Renew the payment method which a subscriber uses, i.e. if the card has expired.
+<h3 id="request-headers">Request Headers</h3>
+<p>The request endpoint is: <code class="code">https://api.scanpay.dk/v1/subscriber/<span class="hljs-string">$id</span>/renew</code></p>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>HTTP/1.1 headers</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tablecode field--required">
+        <span class="hljs-attribute">Authorization</span>: <span class="">Basic MTE1MzpZSFpJVUdRdzZOa0NJWWEzbUc2Q1djZ1NobmwxM3h1STdPREZVWXVNeTBqNzkwUTZUaHdCRWp4ZldGWHdKWjBX</span>
+      </td>
+      <td>
+        HTTP Basic authentication. <a href="/security#basic-authentication">Read more</a>.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-POST /v1/subscribers/$id/renew
-    "url": "https://betal.scanpay.dk/9qdvbx2r"
+<h3 id="request-fields">Request Fields</h3>
+<p>All request fields are listed below. Note that if the billing address and/or shipping address is unspecified, they will default to the addresses specified in the subscriber.</p>
 
-</code></pre>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>JSON fields</th>
+      <th class="td--desc">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"successurl"</span>: <span class="hljs-string">"http://blixen.dk/success"</span></td>
+      <td class="td--desc">Redirect to this URL after succesful payment. If omitted we will show a generic success message.
+      </td>
+    </tr>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"language"</span>: <span class="hljs-string">"da"</span></td>
+      <td class="td--desc">Preferred language for the payment window. We fallback to the <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4">Accept-Language</a> header.</td>
+    </tr>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"lifetime"</span>: <span class="hljs-string">"2d 12h 30m"</span></td>
+      <td class="td--desc">
+        Set payment link lifetime in days (d), hours (h) or minutes (m). Default is <code class="code hljs-string" style="font-size: 12px">"1h"</code> and max is <code class="code hljs-string" style="font-size: 12px">"30d"</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
+<h3 id="response-fields">Response Fields</h3>
+<p>
+  Successful responses have a <code class="code">200</code> HTTP status code with the following JSON field:
+</p>
+<table class="table--fixed">
+  <thead>
+    <tr>
+      <th>JSON field</th>
+      <th class="td--desc">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="paylink--tcode"><span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://betal.scanpay.dk/9qdvbx2r"</span></td>
+      <td class="td--desc">The returned renewal link which the customer should be directed to.</td>
+    </tr>
+  </tbody>
+</table>

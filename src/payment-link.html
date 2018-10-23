@@ -106,6 +106,12 @@
         Set payment link lifetime in days (d), hours (h) or minutes (m). Default is <code class="code hljs-string" style="font-size: 12px">"1h"</code> and max is <code class="code hljs-string" style="font-size: 12px">"30d"</code>
       </td>
     </tr>
+    <tr>
+      <td class="tablecode"><pre>{% include "src/code/paylink/subscriber.json" %}</pre></td>
+      <td class="td--desc">
+        Optionally, create a subscriber with a custom reference. This is for recurring payments and not for normal orders. This field cannot be used with <span class="hljs-attr">"orderid"</span> and <span class="hljs-attr">"items"</span>. See more <a href="/subscriptions">here</a>.
+      </td>
+    </tr>
   </tbody>
 </table>
 

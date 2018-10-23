@@ -102,13 +102,15 @@
         An array with zero or more changes since the requested seq, but not necessarily all changes.
 
         <ul class="table--ul">
+          <li><b>type:</b> The type of the entry. If you do not use subscriptions, you only need to consider the "transaction" type.</li>
           <li><b>id:</b> Transaction id.</li>
           <li><b>rev:</b> Transaction revision number representing the number of changes made to this transaction. Rev will start at 1 and increment with actions (e.g. capture/refund) and other changes to this transaction.</li>
           <li><b>orderid:</b> The orderid that you assigned when you created the payment link (<a href="/payment-link#request-fields">here</a>).</li>
           <li><b>time:</b> Unix timestamps.</li>
           <li><b>acts:</b> Cumulative array of actions in this transaction.</li>
           <li><b>totals:</b> The relevant values for this transaction.</li>
-          <li><b>error:</b> An error message. You should skip the change if this happens.</li>
+          <li><b>subscriber:</b> If the entry is a subscriber or a subscriber charge and not a normal transaction, this field will contain subscriber ref (and for charges also a chargeid).</li>
+          <li><b>error:</b> An error message. You should skip the change if field is present.</li>
         </ul>
       </td>
     </tr>

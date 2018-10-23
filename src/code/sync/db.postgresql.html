@@ -1,5 +1,9 @@
 data := <span class="hljs-built_in">jsondecode</span>(<b>GET</b> <span class="hljs-string">https://api.scanpay.dk/seq/</span> + localseq)
 <b>for</b> trn <b>in</b> data.changes <b>do</b>
+    <b>if</b> <i>trn.type != 'transaction'</i> <b>then</b>
+        <b>continue</b>
+    <b>end</b>
+
     <b>if</b> <i>trn.error is set</i> <b>then</b>
         log trn.error <span class="hljs-comment">// Contact us if this happens</span>
         <b>continue</b>

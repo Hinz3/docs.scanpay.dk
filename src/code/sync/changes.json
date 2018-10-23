@@ -1,8 +1,9 @@
 "changes": [
     {
+        "type": "transaction",
         "id": 1234,
         "rev": 7,
-        "orderid": "abc123",
+        "orderid": "123",
         "time": {
             "created": 1479384780,
             "authorized": 1479384799
@@ -27,6 +28,49 @@
         }
     },
     {
+        "type": "charge",
+        "id": 1234,
+        "rev": 7,
+        "orderid": "c123",
+        "subscriber": {
+            "id": 19,
+            "ref": "301"
+        },
+        "time": {
+            "created": 1479384800,
+            "authorized": 1479384801
+        },
+        "acts": [],
+        "totals": {
+            "authorized": "111.12 DKK",
+            "captured": "99.95 DKK",
+            "refunded": "1.00 DKK",
+            "left": "11.17 DKK"
+        }
+    },
+    {
+        "type": "subscriber",
+        "rev": 7,
+        "subscriber": {
+            "id": 19,
+            "ref": "301"
+        },
+        "time": {
+            "created": 1479384800
+        },
+        "acts": [
+            {
+                "act": "renew",
+                "time": 1479384886
+            },
+            {
+                "act": "renew",
+                "time": 1479387243
+            }
+        ]
+    },
+    {
+        "type": "transaction",
         "id": 5678,
         "error": "datacenter obliterated"
     }
