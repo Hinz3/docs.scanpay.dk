@@ -50,11 +50,9 @@
     },
     {
         "type": "subscriber",
+        "id": 19,
         "rev": 7,
-        "subscriber": {
-            "id": 19,
-            "ref": "301"
-        },
+        "ref": "301",
         "time": {
             "created": 1479384800
         },

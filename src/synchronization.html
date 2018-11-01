@@ -103,13 +103,13 @@
 
         <ul class="table--ul">
           <li><b>type:</b> The type of the entry. If you do not use subscriptions, you only need to consider the "transaction" type.</li>
-          <li><b>id:</b> Transaction id.</li>
-          <li><b>rev:</b> Transaction revision number representing the number of changes made to this transaction. Rev will start at 1 and increment with actions (e.g. capture/refund) and other changes to this transaction.</li>
+          <li><b>id:</b> Transaction id for "transaction" and "charge" types. Subscriber id for "subscriber" type.</li>
+          <li><b>rev:</b> Transaction revision number representing the number of changes made to this entity. Rev will start at 1 and increment with actions (e.g. capture/refund for transactions and charges).</li>
           <li><b>orderid:</b> The orderid that you assigned when you created the payment link (<a href="/payment-link#request-fields">here</a>).</li>
           <li><b>time:</b> Unix timestamps.</li>
-          <li><b>acts:</b> Cumulative array of actions in this transaction.</li>
-          <li><b>totals:</b> The relevant values for this transaction.</li>
-          <li><b>subscriber:</b> If the entry is a subscriber or a subscriber charge and not a normal transaction, this field will contain subscriber ref (and for charges also a chargeid).</li>
+          <li><b>acts:</b> Cumulative array of actions in this entity.</li>
+          <li><b>totals:</b> The relevant totals for a transaction/charge.</li>
+          <li><b>subscriber:</b> This field exists only for charges. It references the subscriber which the charge is made for and contains a subscriber "id" and "ref".</li>
           <li><b>error:</b> An error message. You should skip the change if field is present.</li>
         </ul>
       </td>
